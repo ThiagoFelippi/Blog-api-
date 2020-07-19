@@ -1,3 +1,4 @@
+import { Post } from './../../entity/Post';
 import { MyContext } from './../../myContext';
 import { User } from '../../entity/User';
 import { Resolver, Query, Arg, Mutation, InputType, Field, Int, ObjectType, UseMiddleware, Ctx } from 'type-graphql';
@@ -39,8 +40,12 @@ export class UserResolver{
   async getUsers(
     @Arg("id", () => Int) id : number
   ){
-    const user = await User.findOne({where: {id}})
-    return user
+    const user = await User.findOne(id, {relations: ["post"]})
+    if(user){
+   
+      return user
+    }
+    throw new Error("Sorry, user not exists")
   }
 
   @Mutation(() => User)

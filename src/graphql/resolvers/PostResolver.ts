@@ -18,13 +18,6 @@ class PostInput{
   userId: number
 }
 
-@ObjectType()
-class PostCreate{
-  @Field()
-  post: Post
-
-}
-
 @Resolver()
 export class PostResolver{
 
@@ -53,12 +46,12 @@ export class PostResolver{
     throw new Error(`Error on find user with id equal ${userId} `)
   }
 
-  @Mutation(() => PostCreate)
+  @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async createPosts(
     @Arg("data", () => PostInput) data : PostInput,
     @Ctx() {payload} : MyContext
-  ) : Promise<PostCreate> {
+  ) : Promise<Post> {
     const { userId } = payload
     const user = await User.findOne(userId)
     
@@ -74,9 +67,7 @@ export class PostResolver{
           id: userId
         }
       }).save()
-      return{
-        post
-      }
+      return post
 
     }
 
